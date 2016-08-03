@@ -33,4 +33,15 @@ class Flyer extends Model
     {
         return $this->photos()->save($photo);
     }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    //Verifica se o usuario passado criou o flyer. retorna uma bollean
+    public function ownedBy(User $user)
+    {
+        return $this->user_id == $user->id;
+    }
 }

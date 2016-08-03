@@ -21,3 +21,9 @@ Route::resource('flyers', 'FlyersController');
 Route::get('{zip}/{street}', 'FlyersController@show');
 
 Route::post('{zip}/{street}/photos', 'FlyersController@addPhoto');
+
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
+
+Route::delete('photos/{photo}', 'PhotosController@destroy');

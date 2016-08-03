@@ -2,12 +2,17 @@
 
 @section('content')
 
-<h1>Selling Your Home?</h1>
+<div class="row">
 
-<hr>
+	<div class="col-md-6 col-md-offset-3">
+		<h1>Selling Your Home?</h1>
+		<hr>
+	</div>
+</div>
+
 
 <div class="row">
-	<form action="/flyers" method="post" enctype="multipart/form-data" class="col-md-6">
+	<form action="/flyers" method="post" enctype="multipart/form-data" class="col-md-6 col-md-offset-3">
 
 		@include('flyers.form')
 

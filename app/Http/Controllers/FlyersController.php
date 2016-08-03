@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Flyer;
+use App\Http\Requests\AddPhotoRequest;
 use App\Http\Requests\FlyerRequest;
 use App\Photo;
 use Illuminate\Http\Request;
@@ -10,6 +11,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FlyersController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //Coloca autenticação em tudo, menos no methodo show
+        $this->middleware('auth', ['except' => ['show']]);
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -40,16 +54,17 @@ class FlyersController extends Controller
      */
     public function store(FlyerRequest $request)
     {
-        // colocar num request proprio ja garante que aqui dentro so execute apos a validação
+        // colocar num request proprio ja garante que aqui dentro so execute apos a autorização e validação dos campos
 
         // persistir os dados
-        Flyer::create($request->all());
+        $flyer = new Flyer($request->all());
+        \Auth::user()->publish($flyer);
 
         //flash messaging
         flash()->success('Success', 'Your flyer has been created');
 
-        // redirecionar para a pagina
-        return redirect()->back(); // temporariamente
+        // redirecionar para a pagina utilizando uma função helper
+        return redirect(flyer_path($flyer));
     }
 
     /**
@@ -65,12 +80,9 @@ class FlyersController extends Controller
         return view('flyers.show', compact('flyer'));
     }
 
-    public function addPhoto($zip, $street, Request $request)
+    public function addPhoto($zip, $street, AddPhotoRequest $request)
     {
-        //validação backend (OBS: para o mime funcionar, habilitar o extension=php_fileinfo.dll no php.ini)
-        $this->validate($request, [
-            'photo' => 'required|mimes:jpg,jpeg,png,bmp',
-        ]);
+        // colocar num request proprio ja garante que aqui dentro so execute apos a autorização e validação dos campos
 
         // Cria uma novo Objeto Photo
         $photo = $this->makePhoto($request->file('photo'));
